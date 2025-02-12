@@ -1,0 +1,96 @@
+import unittest
+from katalon import WebUI
+
+class BlockchainNodeOnboarding(unittest.TestCase):
+
+    def setUp(self):
+        # Open the browser and navigate to the web application
+        WebUI.openBrowser('https://your-blockchain-app-url.com')
+
+    def test_sign_up(self):
+        # Navigate to Sign Up page and input details
+        WebUI.click('sign_up_button')
+        WebUI.setText('email_field', 'user@example.com')
+        WebUI.setText('password_field', 'Password123')
+        WebUI.click('sign_up_submit_button')
+
+        # Assert success message
+        WebUI.verifyText('sign_up_success_message', 'Account created successfully')
+
+    def test_sign_in(self):
+        # Navigate to Sign In page and input details
+        WebUI.click('sign_in_button')
+        WebUI.setText('email_field', 'user@example.com')
+        WebUI.setText('password_field', 'Password123')
+        WebUI.click('sign_in_submit_button')
+
+        # Assert login success
+        WebUI.verifyText('welcome_message', 'Welcome, user@example.com')
+
+    def test_onboard_nodes(self):
+        # Submit request to onboard nodes to existing blockchain
+        WebUI.click('onboard_nodes_button')
+
+        nodes = [
+            {'node_id': 'NodeID-123', 'ip': '192.168.1.10', 'type': 'Validator'},
+            {'node_id': 'NodeID-124', 'ip': '192.168.1.11', 'type': 'Validator'}
+        ]
+
+        for node in nodes:
+            WebUI.setText('node_id_field', node['node_id'])
+            WebUI.setText('node_ip_field', node['ip'])
+            WebUI.selectOptionByLabel('node_type_dropdown', node['type'])
+            WebUI.click('add_node_button')
+
+        WebUI.click('next_button')
+
+        wallets = [
+            {'address': '0x88fa61d2faA13aad8Fbd5B030372B4A159BbbDFb', 'type': 'TRANSACTION_SUBMIT'}
+        ]
+
+        for wallet in wallets:
+            WebUI.setText('wallet_address_field', wallet['address'])
+            WebUI.selectOptionByLabel('wallet_type_dropdown', wallet['type'])
+            WebUI.click('add_wallet_button')
+
+        WebUI.click('next_button')
+        WebUI.click('submit_button')
+
+        # Assert success message
+        WebUI.verifyText('onboarding_success_message', 'Nodes and wallets added successfully')
+
+    def test_create_private_blockchain(self):
+        # Submit request to create a new private blockchain
+        WebUI.click('create_private_blockchain_button')
+        WebUI.setText('network_name_field', 'PrivateBlockchain1')
+        WebUI.setText('wallet_address_field', '0x88fa61d2faA13aad8Fbd5B030372B4A159BbbDFb')
+        WebUI.click('next_button')
+
+        nodes = [
+            {'node_id': 'NodeID-123', 'ip': '192.168.1.10'}
+        ]
+
+        for node in nodes:
+            WebUI.setText('node_id_field', node['node_id'])
+            WebUI.setText('node_ip_field', node['ip'])
+            WebUI.click('add_node_button')
+
+        WebUI.click('next_button')
+        WebUI.click('submit_button')
+
+        # Assert success message
+        WebUI.verifyText('blockchain_creation_success_message', 'Private blockchain created successfully')
+
+    def test_sign_out(self):
+        # Sign out from the account
+        WebUI.click('sign_out_button')
+
+        # Assert sign-out success
+        WebUI.verifyText('sign_out_success_message', 'Successfully signed out')
+
+    def tearDown(self):
+        # Close the browser
+        WebUI.closeBrowser()
+
+if __name__ == "__main__":
+    unittest.main()
